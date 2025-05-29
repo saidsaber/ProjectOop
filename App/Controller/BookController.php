@@ -52,7 +52,8 @@ class BookController
         $this->OfferValue = $OfferValue;
     }
 
-    public static function setCount(PDO $pdo){
+    public static function setCount(PDO $pdo)
+    {
         $stmt = $pdo->query("SELECT COUNT(product.ProductId) as total_products FROM product ");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         self::$count = $rows[0]["total_products"];
@@ -123,6 +124,38 @@ class BookController
     public function getOfferValue()
     {
         return $this->OfferValue;
+    }
+
+    public static function getnew($db)
+    {
+        $stmt = $db->query("SELECT product.* , offers.value as OfferValue FROM product LEFT JOIN offers ON(product.ProductId = offers.ProductId) LIMIT 5");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $books = [];
+        foreach ($rows as $row) {
+            $books[] = new self($db, $row['ProductId'], $row['SCateId'], $row['CateId'], $row['BrandId'], $row['AdminId'], $row['lang'], $row['ProductName'], $row['ProductDescription'], $row['ProductPrice'], $row['ProductQty'], $row['Image'], $row['OfferValue']);
+        }
+        return $books;
+    }
+
+    public static function getOffer($db)
+    {
+        $stmt = $db->query("SELECT product.*, offers.value AS OfferValue FROM product LEFT JOIN offers ON product.ProductId = offers.ProductId WHERE offers.value > 0 ORDER BY product.MostCommon DESC LIMIT 5");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $books = [];
+        foreach ($rows as $row) {
+            $books[] = new self($db, $row['ProductId'], $row['SCateId'], $row['CateId'], $row['BrandId'], $row['AdminId'], $row['lang'], $row['ProductName'], $row['ProductDescription'], $row['ProductPrice'], $row['ProductQty'], $row['Image'], $row['OfferValue']);
+        }
+        return $books;
+    }
+    public static function getMostCommon($db)
+    {
+        $stmt = $db->query("SELECT product.* , offers.value as OfferValue FROM product LEFT JOIN offers ON(product.ProductId = offers.ProductId) ORDER BY product.MostCommon DESC LIMIT 5;");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $books = [];
+        foreach ($rows as $row) {
+            $books[] = new self($db, $row['ProductId'], $row['SCateId'], $row['CateId'], $row['BrandId'], $row['AdminId'], $row['lang'], $row['ProductName'], $row['ProductDescription'], $row['ProductPrice'], $row['ProductQty'], $row['Image'], $row['OfferValue']);
+        }
+        return $books;
     }
     public static function getFour($db, $start)
     {
