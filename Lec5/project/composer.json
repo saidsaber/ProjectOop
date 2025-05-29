@@ -1,0 +1,17 @@
+{
+    "name": "eraasoft-329/shoping-cart",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "islam"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
