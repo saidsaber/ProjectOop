@@ -236,19 +236,19 @@ use App\Controller\BookController;
     <section class="section-container mb-5 mt-3">
       <div class="offer d-flex align-items-center justify-content-between rounded-3 p-3 text-white">
         <div class="offer__title fw-bolder">
-          عروض اليوم
+          وقت انتهاء العروض اليوم
         </div>
         <div class="offer__time d-flex gap-2 fs-6">
           <div class="d-flex flex-column align-items-center">
-            <span class="fw-bolder">06</span>
+            <span class="fw-bolder" id="hours">--</span>
             <div>ساعات</div>
           </div>:
           <div class="d-flex flex-column align-items-center">
-            <span class="fw-bolder">10</span>
+            <span class="fw-bolder" id="minutes">--</span>
             <div>دقائق</div>
           </div>:
           <div class="d-flex flex-column align-items-center">
-            <span class="fw-bolder">13</span>
+            <span class="fw-bolder" id="seconds">--</span>
             <div>ثواني</div>
           </div>
         </div>
@@ -501,6 +501,41 @@ use App\Controller\BookController;
   <script src="assets/js/vendors/owl.carousel.min.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function updateCountdown() {
+        const now = new Date();
+        const midnight = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1, // اليوم التالي
+          0, 0, 0 // منتصف الليل
+        );
+
+        const diff = midnight - now;
+
+        const hours = Math.max(0, Math.floor(diff / (1000 * 60 * 60)))+1;
+        const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+        const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+        if (diff <= 0) {
+          clearInterval(interval);
+          document.querySelector('.offer__title').textContent = 'انتهت عروض اليوم!';
+          setTimeout(() => {
+            interval = setInterval(updateCountdown, 1000);
+          }, 1000 - (new Date()).getMilliseconds());
+        }
+      }
+
+      let interval = setInterval(updateCountdown, 1000);
+      updateCountdown();
+    });
+
+  </script>
 </body>
 
 </html>

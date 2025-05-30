@@ -185,7 +185,7 @@ class BookController
         }
         return $books;
     }
-    public function isActive($page, $start)
+    public static function isActive($page, $start)
     {
         return $page == $start ? "active" : "";
     }
