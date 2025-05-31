@@ -5,7 +5,17 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/book2/vendor/autoload.php');
 use App\Controller\BookController;
 $book = ceil(BookController::setCount($db) / 4);
 $start = $_GET['page'] ?? 1;
-$data = BookController::getFour($db, $start);
+if(isset($_GET['lang'])){
+  if($_GET['lang'] == 'ar'){
+    $data = BookController::getFourLang($db, $start ,'ar' );
+  }elseif($_GET['lang'] == 'en'){
+    $data = BookController::getFourLang($db, $start ,'en' );
+  }else{
+    $data = BookController::getFour($db, $start);
+  }
+}else{
+  $data = BookController::getFour($db, $start);
+}
 // echo "<pre>";
 // print_r($data);
 // exit;

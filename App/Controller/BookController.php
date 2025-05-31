@@ -174,6 +174,23 @@ class BookController
         }
         return $books;
     }
+    public static function getFourLang($db, $start , $lang)
+    {
+        if ($start <= 0) {
+            header("Location: http://localhost/book2/shop.php");
+        }
+        $offset = ($start - 1) * 4;
+        $stmt = $db->query("SELECT product.* , offers.value as OfferValue FROM product LEFT JOIN offers ON(product.ProductId = offers.ProductId) where lang = '$lang' LIMIT 4 OFFSET $offset");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $books = [];
+        if ($start > ceil(num: self::$count / 4)) {
+            header("Location: http://localhost/book2/shop.php?page=" . ceil(self::$count / 4));
+        }
+        foreach ($rows as $row) {
+            $books[] = new self($db, $row['ProductId'], $row['SCateId'], $row['CateId'], $row['BrandId'], $row['AdminId'], $row['lang'], $row['ProductName'], $row['ProductDescription'], $row['ProductPrice'], $row['ProductQty'], $row['Image'], $row['OfferValue']);
+        }
+        return $books;
+    }
 
     public static function getById($db, $id)
     {
